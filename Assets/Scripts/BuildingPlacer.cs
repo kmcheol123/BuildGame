@@ -10,7 +10,7 @@ public class BuildingPlacer : MonoBehaviour
     private BuildingPreview previewScript;
     void Start()
     {
-        
+
     }
     public void StartBuilding(int buildingSIze)
     {
@@ -24,11 +24,11 @@ public class BuildingPlacer : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             GameManager.Instance.isBuilding = !GameManager.Instance.isBuilding;
-            if(previewObj == null && GameManager.Instance.isBuilding)
+            if (previewObj == null && GameManager.Instance.isBuilding)
             {
                 StartBuilding(1);
             }
-            else if(previewObj != null && !GameManager.Instance.isBuilding)
+            else if (previewObj != null && !GameManager.Instance.isBuilding)
             {
                 Destroy(previewObj);
             }
@@ -71,31 +71,53 @@ public class BuildingPlacer : MonoBehaviour
         }
         if (GameManager.Instance.isBuilding)
         {
-            Ray ray =Camera.main.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Floor")))  // camera는 받아와서 쓰는걸 추천      // out은 외부에서 인자에 들어온 것을 계산하고 그대로 배출하고 싶을떄
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Floor")))  // camera는 받아와서 쓰는걸 추천      // out은 외부에서 인자에 들어온 것을 계산하고 그대로 배출하고 싶을떄
             {
                 Vector3 hitpoint = hit.point;
                 Vector2Int gridPos = new Vector2Int(Mathf.FloorToInt(hitpoint.x), Mathf.FloorToInt(hitpoint.z));
                 Vector3 displayPos = new Vector3(gridPos.x + buildingData.size.x / 2f, 1, gridPos.y + buildingData.size.y / 2f);
-                previewObj. transform.position = displayPos;
+                previewObj.transform.position = displayPos;
 
                 bool canPlace = GameManager.Instance.IsAreaFree(gridPos, buildingData.size);
                 previewScript.SetColer(canPlace ? Color.green : Color.red);
 
-                if(Input.GetMouseButtonDown(0) && canPlace)
+                if (Input.GetMouseButtonDown(0) && canPlace)
                 {
                     PlaceBuilding(gridPos);
                 }
             }
         }
+        if (GameManager.Instance.isBuilding)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("building")))  // camera는 받아와서 쓰는걸 추천      // out은 외부에서 인자에 들어온 것을 계산하고 그대로 배출하고 싶을떄
+            {
+                Vector3 hitpoint = hit.transform.position;
+                Vector2Int gridPos = new Vector2Int(Mathf.FloorToInt(hitpoint.x - buildingData.size.x / 2), Mathf.FloorToInt(hitpoint.z - buildingData.size.y /2));
+                
+                if (Input.GetMouseButtonDown(1) )
+                {
+                    GameManager.Instance.NOArea(gridPos, buildingData.size);
+                    
+                    Destroy(hit.transform.gameObject);
+
+                }
+            }
+        }
     }
+    [SerializeField]
     void PlaceBuilding(Vector2Int gridPos)
     {
-        Debug.Log(buildingData.size.x);
         Vector3 spawnPos = new Vector3(gridPos.x + buildingData.size.x / 2f, 1, gridPos.y + buildingData.size.y / 2f);
         GameObject createBuilding = Instantiate(buildingPrefab, spawnPos, Quaternion.identity);
         createBuilding.transform.name = "CreateBuilding";
         createBuilding.GetComponent<Building>().SetBuildingSize(buildingData.size.x);
+        createBuilding.layer = LayerMask.NameToLayer("building");
+        
         GameManager.Instance.OccupyArea(gridPos, buildingData.size);
+        
     }
-}
+
+ }
+

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,8 +10,13 @@ public class TilemapGenerate : MonoBehaviour
 
     void Start()
     {
+
+
+    }
+    public void SetTileMap()
+    {
         int[,] map = GameManager.Instance.map;
-        for(int x = 0; x < map.GetLength(0); x++)
+        for (int x = 0; x < map.GetLength(0); x++)
         {
             for (int y = 0; y < map.GetLength(1); y++)
             {
@@ -28,7 +33,6 @@ public class TilemapGenerate : MonoBehaviour
             }
         }
     }
-
     // Update is called once per frame
     void Update()
     {

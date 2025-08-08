@@ -5,27 +5,25 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance; //싱글톤
-
     public int width = 10;
     public int height = 10;
     public bool[,] occupied;        // true=타일에 건물 있음
     public bool isBuilding = false; // 건물을 지을 수 있는 상태
 
-    public int[,] map = new int[,]
-    {
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0},
-        {0, 0, 0, 0, 0}
-    };
-
-    private void Awake()
+    public int[,] map;
+    TilemapGenerate tilemapGenerate;
+    private void Awake()    
     {
         Instance = this;
+        tilemapGenerate = GameObject.FindAnyObjectByType<TilemapGenerate>();
+    }
+    public void SetMaP(int[,] _map)
+    {
+        map = _map;
         width = map.GetLength(0);
-        height = map.GetLength(0);
-        occupied = new bool[width,height];
+        height = map.GetLength(1);
+
+        tilemapGenerate.SetTileMap();   
     }
     public bool IsAreaFree(Vector2Int start, Vector2Int size)
     {
@@ -43,6 +41,7 @@ public class GameManager : MonoBehaviour
         }
         return true;
     }
+
     public void OccupyArea(Vector2Int start, Vector2Int size)
     {
         for(int x = 0;x < size.x; x++)
@@ -53,10 +52,19 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-
+    public void NOArea(Vector2Int start, Vector2Int size)
+    {
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                occupied[start.x + x, start.y + y] = false;
+            }
+        }
+    }
     void Start()
     {
-        
+        tilemapGenerate = GameObject.FindAnyObjectByType<TilemapGenerate>();
     }
 
     void Update()
