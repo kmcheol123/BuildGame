@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance; //½Ì±ÛÅæ
+    public static GameManager Instance; //ì‹±ê¸€í†¤
     public int width = 10;
     public int height = 10;
-    public bool[,] occupied;        // true=Å¸ÀÏ¿¡ °Ç¹° ÀÖÀ½
-    public bool isBuilding = false; // °Ç¹°À» ÁöÀ» ¼ö ÀÖ´Â »óÅÂ
+    public bool[,] occupied;        // true=íƒ€ì¼ì— ê±´ë¬¼ ìˆìŒ
+    public bool isBuilding = false; // ê±´ë¬¼ì„ ì§€ì„ ìˆ˜ ìˆëŠ” ìƒíƒœ
 
     public int[,] map;
     TilemapGenerate tilemapGenerate;
@@ -23,7 +23,22 @@ public class GameManager : MonoBehaviour
         width = map.GetLength(0);
         height = map.GetLength(1);
 
-        tilemapGenerate.SetTileMap();   
+        tilemapGenerate.SetTileMap();
+        occupied = new bool[weight, height];
+        for(int x = 0; x < width; x++)
+        {
+            for(int y = 0; y < height; y++)
+            {
+                if(map[x, y] == 0)
+                {
+                    occupied[x, y] = false;
+                }
+                else
+                {
+                    occupied[x, y] = true;
+                }
+            }
+        }
     }
     public bool IsAreaFree(Vector2Int start, Vector2Int size)
     {
