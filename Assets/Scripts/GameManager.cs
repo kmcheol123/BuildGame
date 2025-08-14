@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
         height = map.GetLength(1);
 
         tilemapGenerate.SetTileMap();
-        occupied = new bool[weight, height];
+        occupied = new bool[width, height];
         for(int x = 0; x < width; x++)
         {
             for(int y = 0; y < height; y++)
